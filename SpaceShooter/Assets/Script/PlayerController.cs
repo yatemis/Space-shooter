@@ -42,6 +42,10 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Debug.Log("Game Over!");
+
+            // Wywo?anie ko?ca gry
+            EndGame();
+
             Destroy(gameObject); // Usuni?cie gracza
         }
     }
@@ -71,7 +75,19 @@ public class PlayerController : MonoBehaviour
             timeText.text = "Time: " + Mathf.FloorToInt(elapsedTime) + "s";
         }
     }
+
+    private void EndGame()
+    {
+        // Znajd? GameManager i wywo?aj metod? ko?ca gry
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        if (gameManager != null)
+        {
+            gameManager.AddScore(score); // Przeka? aktualny wynik do GameManagera
+            gameManager.EndGame(); // Przenie? gracza na ekran ko?cowy
+        }
+        else
+        {
+            Debug.LogError("GameManager not found in the scene!");
+        }
+    }
 }
-
-
-

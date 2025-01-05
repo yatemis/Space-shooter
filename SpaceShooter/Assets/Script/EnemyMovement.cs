@@ -2,36 +2,39 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public float speed = 5.0f; // Pr?dko?? ruchu przeciwnika
+    public float speed = 5.0f;
+    private Vector3 moveDirection = Vector3.down;
 
-    // Dodanie zdarzenia do obs?ugi zniszczenia przeciwnika
     public delegate void EnemyDestroyedHandler();
     public event EnemyDestroyedHandler OnEnemyDestroyed;
 
     void Update()
     {
-        // Poruszanie przeciwnika w dó?
-        transform.Translate(Vector3.down * speed * Time.deltaTime);
+        transform.Translate(moveDirection * speed * Time.deltaTime);
 
-        // Usuni?cie przeciwnika, je?eli opu?ci ekran
-        if (transform.position.y < -10)
+        if (OutOfBounds())
         {
             DestroyEnemy();
         }
     }
 
-    private void OnDestroy()
+    public void SetMoveDirection(Vector3 direction)
     {
-        DestroyEnemy();
+        moveDirection = direction.normalized; // Normalizuj kierunek
+    }
+
+    private bool OutOfBounds()
+    {
+        return transform.position.y < -15 || transform.position.y > 15 ||
+               transform.position.x < -15 || transform.position.x > 15;
     }
 
     private void DestroyEnemy()
     {
         if (OnEnemyDestroyed != null)
         {
-            OnEnemyDestroyed.Invoke(); // Wywo?anie zdarzenia
+            OnEnemyDestroyed.Invoke();
         }
         Destroy(gameObject);
     }
 }
-
